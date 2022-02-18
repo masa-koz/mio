@@ -324,8 +324,12 @@ impl UdpSocket {
         self.inner.connect(addr)
     }
 
-    ///
-    pub fn do_io<R>(&self, f: impl FnOnce() -> io::Result<R>) -> io::Result<R> {
+    /// Execute an I/O operations ensuring that the socket receives more events
+    /// if it hits a [`WouldBlock`] error.
+    pub fn do_io<F, R>(&self, f: F) -> io::Result<R>
+    where
+        F: FnOnce() -> io::Result<R>,
+    {
         self.inner.do_io(|_inner| f())
     }
 
