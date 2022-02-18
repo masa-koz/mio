@@ -324,6 +324,11 @@ impl UdpSocket {
         self.inner.connect(addr)
     }
 
+    ///
+    pub fn do_io<R>(&self, f: impl FnOnce() -> io::Result<R>) -> io::Result<R> {
+        self.inner.do_io(|_inner| f())
+    }
+
     /// Sets the value of the `SO_BROADCAST` option for this socket.
     ///
     /// When enabled, this socket is allowed to send packets to a broadcast
